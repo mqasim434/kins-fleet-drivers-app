@@ -3,127 +3,120 @@ import 'package:provider/provider.dart';
 import 'package:kins_fleet_drivers/core/auth/auth_provider.dart';
 import 'package:kins_fleet_drivers/core/config/app_colors.dart';
 import 'package:kins_fleet_drivers/core/utils/date_utils.dart';
-import 'package:kins_fleet_drivers/core/utils/labels_nl.dart';
+import 'package:kins_fleet_drivers/features/dashboard/dashboard_provider.dart';
+import 'package:kins_fleet_drivers/features/dashboard/widgets/kpi_card.dart';
+import 'package:kins_fleet_drivers/features/dashboard/widgets/quick_links_grid.dart';
+import 'package:kins_fleet_drivers/routing/routes.dart';
+import 'package:kins_fleet_drivers/widgets/error_banner.dart';
 
-/// Placeholder dashboard until Module 2. Confirms auth session works.
-class DashboardScreen extends StatelessWidget {
+class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
+
+  @override
+  State<DashboardScreen> createState() => _DashboardScreenState();
+}
+
+class _DashboardScreenState extends State<DashboardScreen> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) => _load());
+  }
+
+  Future<void> _load() async {
+    final auth = context.read<AuthProvider>();
+    final driverId = auth.user?.driverId;
+    if (driverId != null && driverId.isNotEmpty) {
+      await context.read<DashboardProvider>().load(driverId);
+    }
+  }
+
+  Future<void> _refresh() async {
+    final driverId = context.read<AuthProvider>().user?.driverId ?? '';
+    await context.read<DashboardProvider>().refresh(driverId);
+  }
 
   @override
   Widget build(BuildContext context) {
     final auth = context.watch<AuthProvider>();
+    final dashboard = context.watch<DashboardProvider>();
     final today = AppDateUtils.formatDate(DateTime.now());
+
+    final quickLinks = [
+      const QuickLink(
+        label: 'Mijn diensten',
+        icon: Icons.calendar_today_outlined,
+        route: AppRoutes.shifts,
+        color: AppColors.accent,
+      ),
+      const QuickLink(
+        label: "Foto's",
+        icon: Icons.photo_camera_outlined,
+        route: AppRoutes.photos,
+        color: Color(0xFF7C3AED),
+      ),
+      const QuickLink(
+        label: 'Overdracht',
+        icon: Icons.swap_horiz_outlined,
+        route: AppRoutes.handovers,
+        color: Color(0xFF0891B2),
+      ),
+      const QuickLink(
+        label: 'Schade melden',
+        icon: Icons.report_outlined,
+        route: AppRoutes.damage,
+        color: Color(0xFFDC2626),
+      ),
+    ];
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('Dashboard'),
-        actions: [
-          IconButton(
-            tooltip: 'Uitloggen',
-            icon: const Icon(Icons.logout),
-            onPressed: () => auth.signOut(),
-          ),
-        ],
       ),
-      body: SafeArea(
-        child: Padding(
+      body: RefreshIndicator(
+        onRefresh: _refresh,
+        color: AppColors.accent,
+        child: ListView(
+          physics: const AlwaysScrollableScrollPhysics(),
           padding: const EdgeInsets.all(20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Hallo, ${auth.driverDisplayName}',
-                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.textPrimary,
-                    ),
-              ),
-              const SizedBox(height: 4),
-              Text(
-                today,
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: AppColors.textSecondary,
-                    ),
-              ),
-              const SizedBox(height: 24),
-              Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(20),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          const Icon(Icons.verified_user, color: AppColors.success),
-                          const SizedBox(width: 8),
-                          Text(
-                            LabelsNl.userStatus(auth.user?.status),
-                            style: const TextStyle(
-                              fontWeight: FontWeight.w600,
-                              color: AppColors.success,
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 16),
-                      _InfoRow(
-                        label: 'E-mail',
-                        value: auth.user?.email ?? '—',
-                      ),
-                      _InfoRow(
-                        label: 'Afdeling',
-                        value: auth.driver?.departmentName ?? '—',
-                      ),
-                      _InfoRow(
-                        label: 'Telefoon',
-                        value: auth.driver?.phone ?? '—',
-                      ),
-                    ],
+          children: [
+            Text(
+              'Hallo, ${auth.driverDisplayName}',
+              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.textPrimary,
                   ),
-                ),
-              ),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              today,
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: AppColors.textSecondary,
+                  ),
+            ),
+            const SizedBox(height: 24),
+            if (dashboard.error != null) ...[
+              ErrorBanner(message: dashboard.error!),
               const SizedBox(height: 16),
-              Text(
-                'Module 2 (dashboard met diensten) volgt na test.',
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: AppColors.textSecondary,
-                    ),
-              ),
             ],
-          ),
+            KpiCard(
+              label: 'Diensten vandaag',
+              value: '${dashboard.todayShiftCount}',
+              icon: Icons.directions_bus_outlined,
+              isLoading: dashboard.isLoading,
+            ),
+            const SizedBox(height: 24),
+            Text(
+              'Snelle acties',
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.textPrimary,
+                  ),
+            ),
+            const SizedBox(height: 12),
+            QuickLinksGrid(links: quickLinks),
+          ],
         ),
-      ),
-    );
-  }
-}
-
-class _InfoRow extends StatelessWidget {
-  const _InfoRow({required this.label, required this.value});
-
-  final String label;
-  final String value;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 8),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(
-            width: 88,
-            child: Text(
-              label,
-              style: const TextStyle(color: AppColors.textSecondary),
-            ),
-          ),
-          Expanded(
-            child: Text(
-              value,
-              style: const TextStyle(fontWeight: FontWeight.w500),
-            ),
-          ),
-        ],
       ),
     );
   }
