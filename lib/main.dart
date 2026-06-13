@@ -1,58 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:intl/date_symbol_data_local.dart';
+import 'package:provider/provider.dart';
+import 'package:kins_fleet_drivers/app.dart';
+import 'package:kins_fleet_drivers/core/auth/auth_provider.dart';
+import 'package:kins_fleet_drivers/core/auth/auth_repository.dart';
 import 'package:kins_fleet_drivers/core/firebase/firebase_init.dart';
+import 'package:kins_fleet_drivers/routing/app_router.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await initializeFirebase();
-  runApp(const KinsFleetDriversApp());
-}
+  await initializeDateFormatting('nl_NL');
 
-class KinsFleetDriversApp extends StatelessWidget {
-  const KinsFleetDriversApp({super.key});
+  final authRepository = AuthRepository();
+  final authProvider = AuthProvider(authRepository);
+  await authProvider.initialize();
 
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'KINS Fleet Chauffeur',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color(0xFF2563EB),
-          primary: const Color(0xFF0B2E44),
-        ),
-        useMaterial3: true,
-      ),
-      home: const _FirebaseReadyScreen(),
-    );
-  }
-}
+  final router = createAppRouter(authProvider);
 
-class _FirebaseReadyScreen extends StatelessWidget {
-  const _FirebaseReadyScreen();
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('KINS Fleet Chauffeur'),
-        backgroundColor: const Color(0xFF0B2E44),
-        foregroundColor: Colors.white,
-      ),
-      body: const Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.check_circle, color: Color(0xFF2563EB), size: 64),
-            SizedBox(height: 16),
-            Text(
-              'Firebase geïnitialiseerd',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
-            ),
-            SizedBox(height: 8),
-            Text('Project: kins-fleet-app'),
-          ],
-        ),
-      ),
-    );
-  }
+  runApp(
+    ChangeNotifierProvider<AuthProvider>.value(
+      value: authProvider,
+      child: KinsFleetDriversApp(router: router),
+    ),
+  );
 }
