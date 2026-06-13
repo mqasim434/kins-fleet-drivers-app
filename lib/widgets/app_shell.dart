@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kins_fleet_drivers/core/config/app_colors.dart';
+import 'package:kins_fleet_drivers/l10n/app_localizations.dart';
 import 'package:kins_fleet_drivers/routing/routes.dart';
 
 class AppShell extends StatelessWidget {
@@ -20,6 +21,8 @@ class AppShell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+
     return Scaffold(
       body: child,
       bottomNavigationBar: NavigationBar(
@@ -32,16 +35,16 @@ class AppShell extends StatelessWidget {
               context.go(AppRoutes.profile);
           }
         },
-        destinations: const [
+        destinations: [
           NavigationDestination(
-            icon: Icon(Icons.home_outlined),
-            selectedIcon: Icon(Icons.home),
-            label: 'Home',
+            icon: const Icon(Icons.home_outlined),
+            selectedIcon: const Icon(Icons.home),
+            label: l10n.navHome,
           ),
           NavigationDestination(
-            icon: Icon(Icons.person_outline),
-            selectedIcon: Icon(Icons.person),
-            label: 'Profiel',
+            icon: const Icon(Icons.person_outline),
+            selectedIcon: const Icon(Icons.person),
+            label: l10n.navProfile,
           ),
         ],
         indicatorColor: AppColors.accent.withValues(alpha: 0.15),

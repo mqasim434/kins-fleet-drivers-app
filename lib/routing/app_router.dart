@@ -7,7 +7,10 @@ import 'package:kins_fleet_drivers/features/dashboard/dashboard_screen.dart';
 import 'package:kins_fleet_drivers/features/profile/profile_screen.dart';
 import 'package:kins_fleet_drivers/features/splash/splash_screen.dart';
 import 'package:kins_fleet_drivers/routing/routes.dart';
+import 'package:kins_fleet_drivers/features/shifts/shift_detail_screen.dart';
+import 'package:kins_fleet_drivers/features/shifts/shifts_list_screen.dart';
 import 'package:kins_fleet_drivers/widgets/app_shell.dart';
+import 'package:kins_fleet_drivers/l10n/app_localizations.dart';
 import 'package:kins_fleet_drivers/widgets/module_placeholder_screen.dart';
 
 GoRouter createAppRouter(AuthProvider authProvider) {
@@ -66,43 +69,59 @@ GoRouter createAppRouter(AuthProvider authProvider) {
           ),
           GoRoute(
             path: AppRoutes.shifts,
-            builder: (context, state) => const ModulePlaceholderScreen(
-              title: 'Mijn diensten',
-              moduleNumber: 3,
-              icon: Icons.calendar_today_outlined,
-            ),
+            builder: (context, state) => const ShiftsListScreen(),
+            routes: [
+              GoRoute(
+                path: ':id',
+                builder: (context, state) => ShiftDetailScreen(
+                  shiftId: state.pathParameters['id']!,
+                ),
+              ),
+            ],
           ),
           GoRoute(
             path: AppRoutes.photos,
-            builder: (context, state) => const ModulePlaceholderScreen(
-              title: "Busfoto's",
-              moduleNumber: 4,
-              icon: Icons.photo_camera_outlined,
-            ),
+            builder: (context, state) {
+              final l10n = AppLocalizations.of(context);
+              return ModulePlaceholderScreen(
+                title: l10n.modulePhotos,
+                moduleNumber: 4,
+                icon: Icons.photo_camera_outlined,
+              );
+            },
           ),
           GoRoute(
             path: AppRoutes.handovers,
-            builder: (context, state) => const ModulePlaceholderScreen(
-              title: 'Overdrachten',
-              moduleNumber: 5,
-              icon: Icons.swap_horiz_outlined,
-            ),
+            builder: (context, state) {
+              final l10n = AppLocalizations.of(context);
+              return ModulePlaceholderScreen(
+                title: l10n.moduleHandovers,
+                moduleNumber: 5,
+                icon: Icons.swap_horiz_outlined,
+              );
+            },
           ),
           GoRoute(
             path: AppRoutes.damage,
-            builder: (context, state) => const ModulePlaceholderScreen(
-              title: 'Schade melden',
-              moduleNumber: 6,
-              icon: Icons.report_outlined,
-            ),
+            builder: (context, state) {
+              final l10n = AppLocalizations.of(context);
+              return ModulePlaceholderScreen(
+                title: l10n.moduleDamage,
+                moduleNumber: 6,
+                icon: Icons.report_outlined,
+              );
+            },
           ),
         ],
       ),
     ],
-    errorBuilder: (context, state) => Scaffold(
-      body: Center(
-        child: Text('Pagina niet gevonden: ${state.uri}'),
-      ),
-    ),
+    errorBuilder: (context, state) {
+      final l10n = AppLocalizations.of(context);
+      return Scaffold(
+        body: Center(
+          child: Text(l10n.pageNotFound(state.uri.toString())),
+        ),
+      );
+    },
   );
 }

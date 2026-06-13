@@ -3,7 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:kins_fleet_drivers/core/auth/auth_failure.dart';
 import 'package:kins_fleet_drivers/core/auth/models/driver_profile.dart';
 import 'package:kins_fleet_drivers/core/auth/models/user_profile.dart';
-import 'package:kins_fleet_drivers/core/utils/auth_errors.dart';
+import 'package:kins_fleet_drivers/core/l10n/auth_messages.dart';
 
 class AuthRepository {
   AuthRepository({
@@ -30,17 +30,15 @@ class AuthRepository {
       );
       final user = credential.user;
       if (user == null) {
-        throw AuthFailure('Inloggen mislukt. Probeer het opnieuw.');
+        throw AuthFailure(AuthMessageKey.signInFailed);
       }
       return _loadAndValidateSession(user);
     } on FirebaseAuthException catch (error) {
       throw AuthFailure(AuthErrors.fromFirebaseAuth(error));
     } on AuthFailure {
       rethrow;
-    } on FirebaseException catch (error) {
-      throw AuthFailure(
-        error.message ?? 'Netwerkfout. Controleer uw verbinding en probeer opnieuw.',
-      );
+    } on FirebaseException {
+      throw AuthFailure(AuthMessageKey.networkError);
     }
   }
 
@@ -68,27 +66,24 @@ class AuthRepository {
 
     if (!userDoc.exists) {
       await _auth.signOut();
-      throw AuthFailure(AuthErrors.missingProfileMessage);
+      throw AuthFailure(AuthMessageKey.missingProfile);
     }
 
     final profile = UserProfile.fromFirestore(user.uid, userDoc.data()!);
 
     if (!profile.isDriver) {
       await _auth.signOut();
-      if (AuthErrors.webAppRoles.contains(profile.role)) {
-        throw AuthFailure(AuthErrors.adminAppMessage);
-      }
-      throw AuthFailure(AuthErrors.adminAppMessage);
+      throw AuthFailure(AuthMessageKey.adminApp);
     }
 
     if (!profile.isActive) {
       await _auth.signOut();
-      throw AuthFailure(AuthErrors.inactiveAccountMessage);
+      throw AuthFailure(AuthMessageKey.inactiveAccount);
     }
 
     if (profile.driverId.isEmpty) {
       await _auth.signOut();
-      throw AuthFailure(AuthErrors.missingDriverLinkMessage);
+      throw AuthFailure(AuthMessageKey.missingDriverLink);
     }
 
     final driverDoc =
@@ -96,7 +91,7 @@ class AuthRepository {
 
     if (!driverDoc.exists) {
       await _auth.signOut();
-      throw AuthFailure(AuthErrors.missingDriverMessage);
+      throw AuthFailure(AuthMessageKey.missingDriver);
     }
 
     return AuthSession(
@@ -104,4 +99,14 @@ class AuthRepository {
       driver: DriverProfile.fromFirestore(driverDoc.id, driverDoc.data()!),
     );
   }
+}
+
+class AuthSession {
+  const AuthSession({
+    required this.user,
+    required this.driver,
+  });
+
+  final UserProfile user;
+  final DriverProfile driver;
 }

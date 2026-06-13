@@ -8,19 +8,19 @@ class DashboardProvider extends ChangeNotifier {
 
   int todayShiftCount = 0;
   bool isLoading = false;
-  String? error;
+  bool hasError = false;
 
   Future<void> load(String driverId) async {
     if (driverId.isEmpty) return;
 
     isLoading = true;
-    error = null;
+    hasError = false;
     notifyListeners();
 
     try {
       todayShiftCount = await _repository.countTodayShifts(driverId);
     } on Exception catch (_) {
-      error = 'Diensten laden mislukt. Controleer uw verbinding en probeer opnieuw.';
+      hasError = true;
       todayShiftCount = 0;
     } finally {
       isLoading = false;

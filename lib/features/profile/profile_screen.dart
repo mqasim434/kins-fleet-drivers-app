@@ -2,21 +2,23 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:kins_fleet_drivers/core/auth/auth_provider.dart';
 import 'package:kins_fleet_drivers/core/config/app_colors.dart';
-import 'package:kins_fleet_drivers/core/utils/labels_nl.dart';
+import 'package:kins_fleet_drivers/core/l10n/locale_provider.dart';
+import 'package:kins_fleet_drivers/l10n/app_localizations.dart';
 
-/// Basic profile tab until Module 7 adds full profile + logout confirm.
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final auth = context.watch<AuthProvider>();
+    final localeProvider = context.watch<LocaleProvider>();
     final driver = auth.driver;
     final user = auth.user;
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Profiel'),
+        title: Text(l10n.profileTitle),
       ),
       body: ListView(
         padding: const EdgeInsets.all(20),
@@ -50,15 +52,60 @@ class ProfileScreen extends StatelessWidget {
               padding: const EdgeInsets.all(16),
               child: Column(
                 children: [
-                  _ProfileRow(label: 'E-mail', value: user?.email ?? '—'),
-                  _ProfileRow(label: 'Telefoon', value: driver?.phone ?? '—'),
                   _ProfileRow(
-                    label: 'Afdeling',
-                    value: driver?.departmentName ?? '—',
+                    label: l10n.profileEmail,
+                    value: user?.email ?? l10n.emptyValue,
                   ),
                   _ProfileRow(
-                    label: 'Status',
-                    value: LabelsNl.userStatus(user?.status),
+                    label: l10n.profilePhone,
+                    value: driver?.phone ?? l10n.emptyValue,
+                  ),
+                  _ProfileRow(
+                    label: l10n.profileDepartment,
+                    value: driver?.departmentName ?? l10n.emptyValue,
+                  ),
+                  _ProfileRow(
+                    label: l10n.profileStatus,
+                    value: l10n.userStatus(user?.status),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(height: 16),
+          Card(
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8),
+                    child: Text(
+                      l10n.settingsLanguage,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.textPrimary,
+                      ),
+                    ),
+                  ),
+                  RadioListTile<Locale>(
+                    title: Text(l10n.settingsLanguageNl),
+                    value: const Locale('nl'),
+                    groupValue: localeProvider.locale,
+                    onChanged: (locale) {
+                      if (locale != null) localeProvider.setDutch();
+                    },
+                    contentPadding: EdgeInsets.zero,
+                  ),
+                  RadioListTile<Locale>(
+                    title: Text(l10n.settingsLanguageEn),
+                    value: const Locale('en'),
+                    groupValue: localeProvider.locale,
+                    onChanged: (locale) {
+                      if (locale != null) localeProvider.setEnglish();
+                    },
+                    contentPadding: EdgeInsets.zero,
                   ),
                 ],
               ),
@@ -68,7 +115,7 @@ class ProfileScreen extends StatelessWidget {
           OutlinedButton.icon(
             onPressed: () => auth.signOut(),
             icon: const Icon(Icons.logout),
-            label: const Text('Uitloggen'),
+            label: Text(l10n.profileLogout),
             style: OutlinedButton.styleFrom(
               minimumSize: const Size.fromHeight(48),
               foregroundColor: AppColors.error,

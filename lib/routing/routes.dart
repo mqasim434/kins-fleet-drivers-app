@@ -8,4 +8,6 @@ abstract final class AppRoutes {
   static const photos = '/photos';
   static const handovers = '/handovers';
   static const damage = '/damage';
+
+  static String shiftDetail(String id) => '/shifts/$id';
 }

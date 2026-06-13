@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:kins_fleet_drivers/core/config/app_colors.dart';
+import 'package:kins_fleet_drivers/l10n/app_localizations.dart';
 
 class SplashScreen extends StatelessWidget {
   const SplashScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+
     return Scaffold(
       backgroundColor: AppColors.navy,
       body: SafeArea(
@@ -38,7 +41,7 @@ class SplashScreen extends StatelessWidget {
               ),
               const SizedBox(height: 8),
               Text(
-                'Chauffeur',
+                l10n.splashChauffeur,
                 style: TextStyle(
                   color: Colors.white.withValues(alpha: 0.85),
                   fontSize: 18,

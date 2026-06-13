@@ -1,21 +1,10 @@
-import 'package:kins_fleet_drivers/core/auth/models/driver_profile.dart';
-import 'package:kins_fleet_drivers/core/auth/models/user_profile.dart';
-
-class AuthSession {
-  const AuthSession({
-    required this.user,
-    required this.driver,
-  });
-
-  final UserProfile user;
-  final DriverProfile driver;
-}
+import 'package:kins_fleet_drivers/core/l10n/auth_messages.dart';
 
 class AuthFailure implements Exception {
-  AuthFailure(this.message);
+  AuthFailure(this.messageKey);
 
-  final String message;
+  final AuthMessageKey messageKey;
 
   @override
-  String toString() => message;
+  String toString() => messageKey.name;
 }

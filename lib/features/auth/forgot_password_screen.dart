@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:kins_fleet_drivers/core/auth/auth_provider.dart';
+import 'package:kins_fleet_drivers/core/l10n/auth_messages.dart';
 import 'package:kins_fleet_drivers/core/utils/validators.dart';
+import 'package:kins_fleet_drivers/l10n/app_localizations.dart';
 import 'package:kins_fleet_drivers/widgets/error_banner.dart';
 import 'package:kins_fleet_drivers/widgets/loading_overlay.dart';
 
@@ -40,11 +42,12 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final auth = context.watch<AuthProvider>();
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Wachtwoord vergeten'),
+        title: Text(l10n.forgotTitle),
       ),
       body: SafeArea(
         child: Stack(
@@ -57,9 +60,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     Text(
-                      _emailSent
-                          ? 'E-mail verzonden'
-                          : 'Wachtwoord resetten',
+                      _emailSent ? l10n.forgotEmailSentTitle : l10n.forgotResetTitle,
                       style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                             fontWeight: FontWeight.bold,
                           ),
@@ -67,14 +68,14 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                     const SizedBox(height: 8),
                     Text(
                       _emailSent
-                          ? 'Controleer uw inbox voor instructies om uw wachtwoord te resetten.'
-                          : 'Voer uw e-mailadres in. U ontvangt een link om uw wachtwoord te resetten.',
+                          ? l10n.forgotEmailSentBody
+                          : l10n.forgotInstructions,
                       style: Theme.of(context).textTheme.bodyLarge,
                     ),
                     const SizedBox(height: 24),
-                    if (auth.loginError != null) ...[
+                    if (auth.loginErrorKey != null) ...[
                       ErrorBanner(
-                        message: auth.loginError!,
+                        message: auth.loginErrorKey!.localize(l10n),
                         onDismiss: auth.clearLoginError,
                       ),
                       const SizedBox(height: 16),
@@ -85,30 +86,30 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                         keyboardType: TextInputType.emailAddress,
                         textInputAction: TextInputAction.done,
                         autocorrect: false,
-                        decoration: const InputDecoration(
-                          labelText: 'E-mailadres',
-                          prefixIcon: Icon(Icons.email_outlined),
+                        decoration: InputDecoration(
+                          labelText: l10n.loginEmail,
+                          prefixIcon: const Icon(Icons.email_outlined),
                         ),
-                        validator: Validators.email,
+                        validator: (value) => Validators.email(value, l10n),
                         enabled: !auth.isBusy,
                         onFieldSubmitted: (_) => _submit(),
                       ),
                       const SizedBox(height: 24),
                       ElevatedButton(
                         onPressed: auth.isBusy ? null : _submit,
-                        child: const Text('Versturen'),
+                        child: Text(l10n.forgotSend),
                       ),
                     ] else ...[
                       ElevatedButton(
                         onPressed: () => context.pop(),
-                        child: const Text('Terug naar inloggen'),
+                        child: Text(l10n.forgotBack),
                       ),
                     ],
                   ],
                 ),
               ),
             ),
-            if (auth.isBusy) const LoadingOverlay(message: 'Bezig met verzenden…'),
+            if (auth.isBusy) LoadingOverlay(message: l10n.forgotBusy),
           ],
         ),
       ),

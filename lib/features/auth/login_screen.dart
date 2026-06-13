@@ -3,7 +3,9 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:kins_fleet_drivers/core/auth/auth_provider.dart';
 import 'package:kins_fleet_drivers/core/config/app_colors.dart';
+import 'package:kins_fleet_drivers/core/l10n/auth_messages.dart';
 import 'package:kins_fleet_drivers/core/utils/validators.dart';
+import 'package:kins_fleet_drivers/l10n/app_localizations.dart';
 import 'package:kins_fleet_drivers/routing/routes.dart';
 import 'package:kins_fleet_drivers/widgets/error_banner.dart';
 import 'package:kins_fleet_drivers/widgets/loading_overlay.dart';
@@ -47,6 +49,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final auth = context.watch<AuthProvider>();
 
     return Scaffold(
@@ -77,7 +80,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     const SizedBox(height: 24),
                     Text(
-                      'Welkom terug',
+                      l10n.loginWelcome,
                       style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                             fontWeight: FontWeight.bold,
                             color: AppColors.textPrimary,
@@ -85,15 +88,15 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      'Log in met uw chauffeuraccount',
+                      l10n.loginSubtitle,
                       style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                             color: AppColors.textSecondary,
                           ),
                     ),
                     const SizedBox(height: 32),
-                    if (auth.loginError != null) ...[
+                    if (auth.loginErrorKey != null) ...[
                       ErrorBanner(
-                        message: auth.loginError!,
+                        message: auth.loginErrorKey!.localize(l10n),
                         onDismiss: auth.clearLoginError,
                       ),
                       const SizedBox(height: 16),
@@ -103,11 +106,11 @@ class _LoginScreenState extends State<LoginScreen> {
                       keyboardType: TextInputType.emailAddress,
                       textInputAction: TextInputAction.next,
                       autocorrect: false,
-                      decoration: const InputDecoration(
-                        labelText: 'E-mailadres',
-                        prefixIcon: Icon(Icons.email_outlined),
+                      decoration: InputDecoration(
+                        labelText: l10n.loginEmail,
+                        prefixIcon: const Icon(Icons.email_outlined),
                       ),
-                      validator: Validators.email,
+                      validator: (value) => Validators.email(value, l10n),
                       enabled: !auth.isBusy,
                     ),
                     const SizedBox(height: 16),
@@ -117,7 +120,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       textInputAction: TextInputAction.done,
                       onFieldSubmitted: (_) => _submit(),
                       decoration: InputDecoration(
-                        labelText: 'Wachtwoord',
+                        labelText: l10n.loginPassword,
                         prefixIcon: const Icon(Icons.lock_outline),
                         suffixIcon: IconButton(
                           icon: Icon(
@@ -132,7 +135,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           },
                         ),
                       ),
-                      validator: Validators.password,
+                      validator: (value) => Validators.password(value, l10n),
                       enabled: !auth.isBusy,
                     ),
                     const SizedBox(height: 12),
@@ -142,19 +145,19 @@ class _LoginScreenState extends State<LoginScreen> {
                         onPressed: auth.isBusy
                             ? null
                             : () => context.push(AppRoutes.forgotPassword),
-                        child: const Text('Wachtwoord vergeten?'),
+                        child: Text(l10n.loginForgot),
                       ),
                     ),
                     const SizedBox(height: 24),
                     ElevatedButton(
                       onPressed: auth.isBusy ? null : _submit,
-                      child: const Text('Inloggen'),
+                      child: Text(l10n.loginSubmit),
                     ),
                   ],
                 ),
               ),
             ),
-            if (auth.isBusy) const LoadingOverlay(message: 'Bezig met inloggen…'),
+            if (auth.isBusy) LoadingOverlay(message: l10n.loginBusy),
           ],
         ),
       ),

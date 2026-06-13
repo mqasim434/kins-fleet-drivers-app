@@ -6,6 +6,7 @@ import 'package:kins_fleet_drivers/core/auth/auth_failure.dart';
 import 'package:kins_fleet_drivers/core/auth/auth_repository.dart';
 import 'package:kins_fleet_drivers/core/auth/models/driver_profile.dart';
 import 'package:kins_fleet_drivers/core/auth/models/user_profile.dart';
+import 'package:kins_fleet_drivers/core/l10n/auth_messages.dart';
 
 class AuthProvider extends ChangeNotifier {
   AuthProvider(this._repository);
@@ -17,7 +18,7 @@ class AuthProvider extends ChangeNotifier {
   bool isBusy = false;
   UserProfile? user;
   DriverProfile? driver;
-  String? loginError;
+  AuthMessageKey? loginErrorKey;
 
   bool get isAuthenticated => user != null && driver != null;
 
@@ -82,7 +83,7 @@ class AuthProvider extends ChangeNotifier {
     required String password,
   }) async {
     isBusy = true;
-    loginError = null;
+    loginErrorKey = null;
     notifyListeners();
 
     try {
@@ -94,7 +95,7 @@ class AuthProvider extends ChangeNotifier {
       driver = session.driver;
       return true;
     } on AuthFailure catch (error) {
-      loginError = error.message;
+      loginErrorKey = error.messageKey;
       user = null;
       driver = null;
       return false;
@@ -106,14 +107,14 @@ class AuthProvider extends ChangeNotifier {
 
   Future<bool> sendPasswordReset(String email) async {
     isBusy = true;
-    loginError = null;
+    loginErrorKey = null;
     notifyListeners();
 
     try {
       await _repository.sendPasswordResetEmail(email);
       return true;
     } on AuthFailure catch (error) {
-      loginError = error.message;
+      loginErrorKey = error.messageKey;
       return false;
     } finally {
       isBusy = false;
@@ -125,12 +126,12 @@ class AuthProvider extends ChangeNotifier {
     await _repository.signOut();
     user = null;
     driver = null;
-    loginError = null;
+    loginErrorKey = null;
     notifyListeners();
   }
 
   void clearLoginError() {
-    loginError = null;
+    loginErrorKey = null;
     notifyListeners();
   }
 
