@@ -10,48 +10,44 @@ class ShiftsRepository {
 
   final FirebaseFirestore _firestore;
 
-  Future<int> countTodayShifts(String driverId) async {
-    final today = AppDateUtils.todayIso();
+  /// Single-field query on [driverId] only — works with driver security rules
+  /// and avoids composite index requirements. Date filtering is done client-side.
+  Future<List<ShiftAssignment>> _fetchAllForDriver(String driverId) async {
     final snapshot = await _firestore
         .collection('shiftAssignments')
         .where('driverId', isEqualTo: driverId)
-        .where('date', isEqualTo: today)
         .get();
-    return snapshot.docs.length;
+
+    return snapshot.docs
+        .map((doc) => ShiftAssignment.fromFirestore(doc.id, doc.data()))
+        .toList();
+  }
+
+  Future<int> countTodayShifts(String driverId) async {
+    final today = AppDateUtils.todayIso();
+    final all = await _fetchAllForDriver(driverId);
+    return all.where((assignment) => assignment.date == today).length;
   }
 
   Future<List<ShiftAssignment>> fetchTodayShifts(String driverId) async {
     final today = AppDateUtils.todayIso();
-    final snapshot = await _firestore
-        .collection('shiftAssignments')
-        .where('driverId', isEqualTo: driverId)
-        .where('date', isEqualTo: today)
-        .get();
-
+    final all = await _fetchAllForDriver(driverId);
     return sortShiftAssignments(
-      snapshot.docs
-          .map((doc) => ShiftAssignment.fromFirestore(doc.id, doc.data()))
-          .toList(),
+      all.where((assignment) => assignment.date == today).toList(),
     );
   }
 
   Future<List<ShiftAssignment>> fetchUpcomingShifts(String driverId) async {
     final today = AppDateUtils.todayIso();
-    final snapshot = await _firestore
-        .collection('shiftAssignments')
-        .where('driverId', isEqualTo: driverId)
-        .where('date', isGreaterThanOrEqualTo: today)
-        .get();
-
+    final all = await _fetchAllForDriver(driverId);
     return sortShiftAssignments(
-      snapshot.docs
-          .map((doc) => ShiftAssignment.fromFirestore(doc.id, doc.data()))
-          .toList(),
+      all.where((assignment) => assignment.date.compareTo(today) >= 0).toList(),
     );
   }
 
   Future<ShiftAssignment?> fetchShiftById(String shiftId) async {
-    final doc = await _firestore.collection('shiftAssignments').doc(shiftId).get();
+    final doc =
+        await _firestore.collection('shiftAssignments').doc(shiftId).get();
     if (!doc.exists) return null;
     return ShiftAssignment.fromFirestore(doc.id, doc.data()!);
   }

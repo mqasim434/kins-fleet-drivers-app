@@ -128,5 +128,32 @@
   "damageRepaired": "Gerepareerd",
   "severityLow": "Laag",
   "severityMedium": "Gemiddeld",
-  "severityHigh": "Hoog"
+  "severityHigh": "Hoog",
+  "photosTitle": "Busfoto's",
+  "photosLoading": "Foto's laden…",
+  "photosEmpty": "Nog geen foto's geüpload",
+  "photosEmptySubtitle": "Maak een foto of kies er een uit uw galerij.",
+  "photosSelectBus": "Bus",
+  "photosSelectDate": "Datum",
+  "photosNotes": "Notities (optioneel)",
+  "photosTakePhoto": "Camera",
+  "photosChooseGallery": "Galerij",
+  "photosUploading": "Uploaden… {percent}%",
+  "@photosUploading": {
+    "placeholders": {
+      "percent": {"type": "int"}
+    }
+  },
+  "photosUploadSuccess": "Foto succesvol geüpload.",
+  "photosFromTodayShifts": "Bussen van vandaag",
+  "photosAllActiveBuses": "Overige actieve bussen",
+  "photosSelectBusHint": "Selecteer een bus",
+  "photosMyUploads": "Mijn uploads",
+  "errorLoadPhotos": "Foto's laden mislukt. Controleer uw verbinding en probeer opnieuw.",
+  "errorImageKitNotConfigured": "ImageKit is niet geconfigureerd. Voeg IMAGEKIT-sleutels toe aan .env.json.",
+  "errorPhotoFileTooLarge": "Bestand is te groot. Maximum is 10 MB.",
+  "errorPhotoInvalidType": "Alleen JPG, PNG, WEBP en HEIC-afbeeldingen zijn toegestaan.",
+  "errorPhotoUploadFailed": "Upload mislukt. Probeer het opnieuw.",
+  "errorPhotoSaveFailed": "Foto opslaan mislukt. Probeer het opnieuw.",
+  "errorPhotoBusRequired": "Selecteer een bus."
 }

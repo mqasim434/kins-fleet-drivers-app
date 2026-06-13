@@ -11,6 +11,7 @@ import 'package:kins_fleet_drivers/features/shifts/shift_detail_screen.dart';
 import 'package:kins_fleet_drivers/features/shifts/shifts_list_screen.dart';
 import 'package:kins_fleet_drivers/widgets/app_shell.dart';
 import 'package:kins_fleet_drivers/l10n/app_localizations.dart';
+import 'package:kins_fleet_drivers/features/photos/photos_screen.dart';
 import 'package:kins_fleet_drivers/widgets/module_placeholder_screen.dart';
 
 GoRouter createAppRouter(AuthProvider authProvider) {
@@ -81,14 +82,7 @@ GoRouter createAppRouter(AuthProvider authProvider) {
           ),
           GoRoute(
             path: AppRoutes.photos,
-            builder: (context, state) {
-              final l10n = AppLocalizations.of(context);
-              return ModulePlaceholderScreen(
-                title: l10n.modulePhotos,
-                moduleNumber: 4,
-                icon: Icons.photo_camera_outlined,
-              );
-            },
+            builder: (context, state) => const PhotosScreen(),
           ),
           GoRoute(
             path: AppRoutes.handovers,

@@ -17,4 +17,8 @@ abstract final class AppDateUtils {
     final now = DateTime.now();
     return DateFormat('yyyy-MM-dd').format(now);
   }
+
+  static String todayIsoFrom(DateTime date) {
+    return DateFormat('yyyy-MM-dd').format(date);
+  }
 }

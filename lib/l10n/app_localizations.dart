@@ -685,6 +685,138 @@ abstract class AppLocalizations {
   /// In nl, this message translates to:
   /// **'Hoog'**
   String get severityHigh;
+
+  /// No description provided for @photosTitle.
+  ///
+  /// In nl, this message translates to:
+  /// **'Busfoto\'s'**
+  String get photosTitle;
+
+  /// No description provided for @photosLoading.
+  ///
+  /// In nl, this message translates to:
+  /// **'Foto\'s laden…'**
+  String get photosLoading;
+
+  /// No description provided for @photosEmpty.
+  ///
+  /// In nl, this message translates to:
+  /// **'Nog geen foto\'s geüpload'**
+  String get photosEmpty;
+
+  /// No description provided for @photosEmptySubtitle.
+  ///
+  /// In nl, this message translates to:
+  /// **'Maak een foto of kies er een uit uw galerij.'**
+  String get photosEmptySubtitle;
+
+  /// No description provided for @photosSelectBus.
+  ///
+  /// In nl, this message translates to:
+  /// **'Bus'**
+  String get photosSelectBus;
+
+  /// No description provided for @photosSelectDate.
+  ///
+  /// In nl, this message translates to:
+  /// **'Datum'**
+  String get photosSelectDate;
+
+  /// No description provided for @photosNotes.
+  ///
+  /// In nl, this message translates to:
+  /// **'Notities (optioneel)'**
+  String get photosNotes;
+
+  /// No description provided for @photosTakePhoto.
+  ///
+  /// In nl, this message translates to:
+  /// **'Camera'**
+  String get photosTakePhoto;
+
+  /// No description provided for @photosChooseGallery.
+  ///
+  /// In nl, this message translates to:
+  /// **'Galerij'**
+  String get photosChooseGallery;
+
+  /// No description provided for @photosUploading.
+  ///
+  /// In nl, this message translates to:
+  /// **'Uploaden… {percent}%'**
+  String photosUploading(int percent);
+
+  /// No description provided for @photosUploadSuccess.
+  ///
+  /// In nl, this message translates to:
+  /// **'Foto succesvol geüpload.'**
+  String get photosUploadSuccess;
+
+  /// No description provided for @photosFromTodayShifts.
+  ///
+  /// In nl, this message translates to:
+  /// **'Bussen van vandaag'**
+  String get photosFromTodayShifts;
+
+  /// No description provided for @photosAllActiveBuses.
+  ///
+  /// In nl, this message translates to:
+  /// **'Overige actieve bussen'**
+  String get photosAllActiveBuses;
+
+  /// No description provided for @photosSelectBusHint.
+  ///
+  /// In nl, this message translates to:
+  /// **'Selecteer een bus'**
+  String get photosSelectBusHint;
+
+  /// No description provided for @photosMyUploads.
+  ///
+  /// In nl, this message translates to:
+  /// **'Mijn uploads'**
+  String get photosMyUploads;
+
+  /// No description provided for @errorLoadPhotos.
+  ///
+  /// In nl, this message translates to:
+  /// **'Foto\'s laden mislukt. Controleer uw verbinding en probeer opnieuw.'**
+  String get errorLoadPhotos;
+
+  /// No description provided for @errorImageKitNotConfigured.
+  ///
+  /// In nl, this message translates to:
+  /// **'ImageKit is niet geconfigureerd. Voeg IMAGEKIT-sleutels toe aan .env.json.'**
+  String get errorImageKitNotConfigured;
+
+  /// No description provided for @errorPhotoFileTooLarge.
+  ///
+  /// In nl, this message translates to:
+  /// **'Bestand is te groot. Maximum is 10 MB.'**
+  String get errorPhotoFileTooLarge;
+
+  /// No description provided for @errorPhotoInvalidType.
+  ///
+  /// In nl, this message translates to:
+  /// **'Alleen JPG, PNG, WEBP en HEIC-afbeeldingen zijn toegestaan.'**
+  String get errorPhotoInvalidType;
+
+  /// No description provided for @errorPhotoUploadFailed.
+  ///
+  /// In nl, this message translates to:
+  /// **'Upload mislukt. Probeer het opnieuw.'**
+  String get errorPhotoUploadFailed;
+
+  /// No description provided for @errorPhotoSaveFailed.
+  ///
+  /// In nl, this message translates to:
+  /// **'Foto opslaan mislukt. Probeer het opnieuw.'**
+  String get errorPhotoSaveFailed;
+
+  /// No description provided for @errorPhotoBusRequired.
+  ///
+  /// In nl, this message translates to:
+  /// **'Selecteer een bus.'**
+  String get errorPhotoBusRequired;
 }
 
 class _AppLocalizationsDelegate

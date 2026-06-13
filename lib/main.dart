@@ -9,6 +9,8 @@ import 'package:kins_fleet_drivers/core/l10n/locale_provider.dart';
 import 'package:kins_fleet_drivers/features/dashboard/dashboard_provider.dart';
 import 'package:kins_fleet_drivers/features/shifts/shifts_provider.dart';
 import 'package:kins_fleet_drivers/features/shifts/shifts_repository.dart';
+import 'package:kins_fleet_drivers/features/photos/photos_provider.dart';
+import 'package:kins_fleet_drivers/features/photos/photos_repository.dart';
 import 'package:kins_fleet_drivers/routing/app_router.dart';
 
 Future<void> main() async {
@@ -25,8 +27,10 @@ Future<void> main() async {
   await authProvider.initialize();
 
   final shiftsRepository = ShiftsRepository();
+  final photosRepository = PhotosRepository(shiftsRepository: shiftsRepository);
   final dashboardProvider = DashboardProvider(shiftsRepository);
   final shiftsProvider = ShiftsProvider(shiftsRepository);
+  final photosProvider = PhotosProvider(photosRepository);
 
   final router = createAppRouter(authProvider);
 
@@ -40,6 +44,7 @@ Future<void> main() async {
           value: dashboardProvider,
         ),
         ChangeNotifierProvider<ShiftsProvider>.value(value: shiftsProvider),
+        ChangeNotifierProvider<PhotosProvider>.value(value: photosProvider),
       ],
       child: KinsFleetDriversApp(router: router),
     ),

@@ -327,4 +327,77 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get severityHigh => 'Hoog';
+
+  @override
+  String get photosTitle => 'Busfoto\'s';
+
+  @override
+  String get photosLoading => 'Foto\'s laden…';
+
+  @override
+  String get photosEmpty => 'Nog geen foto\'s geüpload';
+
+  @override
+  String get photosEmptySubtitle =>
+      'Maak een foto of kies er een uit uw galerij.';
+
+  @override
+  String get photosSelectBus => 'Bus';
+
+  @override
+  String get photosSelectDate => 'Datum';
+
+  @override
+  String get photosNotes => 'Notities (optioneel)';
+
+  @override
+  String get photosTakePhoto => 'Camera';
+
+  @override
+  String get photosChooseGallery => 'Galerij';
+
+  @override
+  String photosUploading(int percent) {
+    return 'Uploaden… $percent%';
+  }
+
+  @override
+  String get photosUploadSuccess => 'Foto succesvol geüpload.';
+
+  @override
+  String get photosFromTodayShifts => 'Bussen van vandaag';
+
+  @override
+  String get photosAllActiveBuses => 'Overige actieve bussen';
+
+  @override
+  String get photosSelectBusHint => 'Selecteer een bus';
+
+  @override
+  String get photosMyUploads => 'Mijn uploads';
+
+  @override
+  String get errorLoadPhotos =>
+      'Foto\'s laden mislukt. Controleer uw verbinding en probeer opnieuw.';
+
+  @override
+  String get errorImageKitNotConfigured =>
+      'ImageKit is niet geconfigureerd. Voeg IMAGEKIT-sleutels toe aan .env.json.';
+
+  @override
+  String get errorPhotoFileTooLarge => 'Bestand is te groot. Maximum is 10 MB.';
+
+  @override
+  String get errorPhotoInvalidType =>
+      'Alleen JPG, PNG, WEBP en HEIC-afbeeldingen zijn toegestaan.';
+
+  @override
+  String get errorPhotoUploadFailed => 'Upload mislukt. Probeer het opnieuw.';
+
+  @override
+  String get errorPhotoSaveFailed =>
+      'Foto opslaan mislukt. Probeer het opnieuw.';
+
+  @override
+  String get errorPhotoBusRequired => 'Selecteer een bus.';
 }

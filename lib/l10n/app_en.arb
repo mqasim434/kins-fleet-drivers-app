@@ -97,5 +97,32 @@
   "damageRepaired": "Repaired",
   "severityLow": "Low",
   "severityMedium": "Medium",
-  "severityHigh": "High"
+  "severityHigh": "High",
+  "photosTitle": "Bus photos",
+  "photosLoading": "Loading photos…",
+  "photosEmpty": "No photos uploaded yet",
+  "photosEmptySubtitle": "Take a photo or choose one from your gallery.",
+  "photosSelectBus": "Bus",
+  "photosSelectDate": "Date",
+  "photosNotes": "Notes (optional)",
+  "photosTakePhoto": "Camera",
+  "photosChooseGallery": "Gallery",
+  "photosUploading": "Uploading… {percent}%",
+  "@photosUploading": {
+    "placeholders": {
+      "percent": {"type": "int"}
+    }
+  },
+  "photosUploadSuccess": "Photo uploaded successfully.",
+  "photosFromTodayShifts": "Buses from today",
+  "photosAllActiveBuses": "Other active buses",
+  "photosSelectBusHint": "Select a bus",
+  "photosMyUploads": "My uploads",
+  "errorLoadPhotos": "Failed to load photos. Check your connection and try again.",
+  "errorImageKitNotConfigured": "ImageKit is not configured. Add IMAGEKIT keys to .env.json.",
+  "errorPhotoFileTooLarge": "File is too large. Maximum is 10 MB.",
+  "errorPhotoInvalidType": "Only JPG, PNG, WEBP and HEIC images are allowed.",
+  "errorPhotoUploadFailed": "Upload failed. Please try again.",
+  "errorPhotoSaveFailed": "Failed to save photo. Please try again.",
+  "errorPhotoBusRequired": "Please select a bus."
 }

@@ -327,4 +327,76 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get severityHigh => 'High';
+
+  @override
+  String get photosTitle => 'Bus photos';
+
+  @override
+  String get photosLoading => 'Loading photos…';
+
+  @override
+  String get photosEmpty => 'No photos uploaded yet';
+
+  @override
+  String get photosEmptySubtitle =>
+      'Take a photo or choose one from your gallery.';
+
+  @override
+  String get photosSelectBus => 'Bus';
+
+  @override
+  String get photosSelectDate => 'Date';
+
+  @override
+  String get photosNotes => 'Notes (optional)';
+
+  @override
+  String get photosTakePhoto => 'Camera';
+
+  @override
+  String get photosChooseGallery => 'Gallery';
+
+  @override
+  String photosUploading(int percent) {
+    return 'Uploading… $percent%';
+  }
+
+  @override
+  String get photosUploadSuccess => 'Photo uploaded successfully.';
+
+  @override
+  String get photosFromTodayShifts => 'Buses from today';
+
+  @override
+  String get photosAllActiveBuses => 'Other active buses';
+
+  @override
+  String get photosSelectBusHint => 'Select a bus';
+
+  @override
+  String get photosMyUploads => 'My uploads';
+
+  @override
+  String get errorLoadPhotos =>
+      'Failed to load photos. Check your connection and try again.';
+
+  @override
+  String get errorImageKitNotConfigured =>
+      'ImageKit is not configured. Add IMAGEKIT keys to .env.json.';
+
+  @override
+  String get errorPhotoFileTooLarge => 'File is too large. Maximum is 10 MB.';
+
+  @override
+  String get errorPhotoInvalidType =>
+      'Only JPG, PNG, WEBP and HEIC images are allowed.';
+
+  @override
+  String get errorPhotoUploadFailed => 'Upload failed. Please try again.';
+
+  @override
+  String get errorPhotoSaveFailed => 'Failed to save photo. Please try again.';
+
+  @override
+  String get errorPhotoBusRequired => 'Please select a bus.';
 }
