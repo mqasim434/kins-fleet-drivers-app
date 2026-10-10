@@ -39,7 +39,10 @@ flutter pub get
 flutter build appbundle --release --dart-define-from-file=.env.json
 ```
 
-Output: `build/app/outputs/bundle/release/app-release.aab`
+Output: `build/app/outputs/bundle/release/app-release.aab`  
+Also copied as: `build/app/outputs/bundle/release/kins-chauffeur-1.0.0.aab`
+
+Verified signed with upload keystore (CN=KINS Logistics, SHA1 `2C:4B:01:2B:…:61:F9`).
 
 Optional device smoke test:
 
