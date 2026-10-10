@@ -1,9 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:kins_fleet_drivers/core/auth/auth_failure.dart';
-import 'package:kins_fleet_drivers/core/auth/models/driver_profile.dart';
-import 'package:kins_fleet_drivers/core/auth/models/user_profile.dart';
-import 'package:kins_fleet_drivers/core/l10n/auth_messages.dart';
+import 'package:kins_fleet_drivers/core/auth/session.dart';
 
 class AuthRepository {
   AuthRepository({
@@ -30,83 +27,98 @@ class AuthRepository {
       );
       final user = credential.user;
       if (user == null) {
-        throw AuthFailure(AuthMessageKey.signInFailed);
+        throw AuthException('Aanmelden is mislukt.');
       }
-      return _loadAndValidateSession(user);
+      return _loadSession(user);
     } on FirebaseAuthException catch (error) {
-      throw AuthFailure(AuthErrors.fromFirebaseAuth(error));
-    } on AuthFailure {
+      throw AuthException(_authMessage(error.code));
+    } on AuthException {
       rethrow;
-    } on FirebaseException {
-      throw AuthFailure(AuthMessageKey.networkError);
+    } catch (_) {
+      throw AuthException('Netwerkfout. Controleer uw verbinding.');
     }
   }
 
   Future<AuthSession?> restoreSession(User user) async {
     try {
-      return await _loadAndValidateSession(user);
-    } on AuthFailure {
+      return await _loadSession(user);
+    } on AuthException {
       await _auth.signOut();
+      return null;
+    } catch (_) {
       return null;
     }
   }
 
-  Future<void> sendPasswordResetEmail(String email) async {
+  Future<void> sendPasswordReset(String email) async {
     try {
       await _auth.sendPasswordResetEmail(email: email.trim());
     } on FirebaseAuthException catch (error) {
-      throw AuthFailure(AuthErrors.fromFirebaseAuth(error));
+      throw AuthException(_authMessage(error.code));
     }
   }
 
   Future<void> signOut() => _auth.signOut();
 
-  Future<AuthSession> _loadAndValidateSession(User user) async {
+  Future<AuthSession> _loadSession(User user) async {
     final userDoc = await _firestore.collection('users').doc(user.uid).get();
-
     if (!userDoc.exists) {
       await _auth.signOut();
-      throw AuthFailure(AuthMessageKey.missingProfile);
+      throw AuthException(
+        'Uw account is nog niet door een beheerder geactiveerd.',
+      );
     }
 
-    final profile = UserProfile.fromFirestore(user.uid, userDoc.data()!);
-
-    if (!profile.isDriver) {
-      await _auth.signOut();
-      throw AuthFailure(AuthMessageKey.adminApp);
+    final account = UserAccount.fromFirestore(user.uid, userDoc.data()!);
+    if (account.canOnboard) {
+      return AuthSession(user: account);
     }
-
-    if (!profile.isActive) {
+    if (!account.isDriver) {
       await _auth.signOut();
-      throw AuthFailure(AuthMessageKey.inactiveAccount);
+      throw AuthException(
+        'Dit account hoort bij het beheerdersdashboard, niet bij de chauffeur-app.',
+      );
     }
-
-    if (profile.driverId.isEmpty) {
+    if (!account.isActive) {
       await _auth.signOut();
-      throw AuthFailure(AuthMessageKey.missingDriverLink);
+      throw AuthException('Dit account is uitgeschakeld.');
+    }
+    if (account.driverId.isEmpty) {
+      await _auth.signOut();
+      throw AuthException(
+        'Dit account is niet gekoppeld aan een chauffeursdossier.',
+      );
     }
 
     final driverDoc =
-        await _firestore.collection('drivers').doc(profile.driverId).get();
-
+        await _firestore.collection('drivers').doc(account.driverId).get();
     if (!driverDoc.exists) {
       await _auth.signOut();
-      throw AuthFailure(AuthMessageKey.missingDriver);
+      throw AuthException('Het chauffeursdossier is niet gevonden.');
     }
 
     return AuthSession(
-      user: profile,
-      driver: DriverProfile.fromFirestore(driverDoc.id, driverDoc.data()!),
+      user: account,
+      driver: DriverRecord.fromFirestore(driverDoc.id, driverDoc.data()!),
     );
   }
-}
 
-class AuthSession {
-  const AuthSession({
-    required this.user,
-    required this.driver,
-  });
-
-  final UserProfile user;
-  final DriverProfile driver;
+  String _authMessage(String code) {
+    switch (code) {
+      case 'invalid-email':
+        return 'Voer een geldig e-mailadres in.';
+      case 'user-disabled':
+        return 'Dit account is uitgeschakeld.';
+      case 'user-not-found':
+      case 'wrong-password':
+      case 'invalid-credential':
+        return 'Onjuist e-mailadres of wachtwoord.';
+      case 'too-many-requests':
+        return 'Te veel pogingen. Probeer het later opnieuw.';
+      case 'network-request-failed':
+        return 'Netwerkfout. Controleer uw verbinding.';
+      default:
+        return 'Aanmelden is mislukt. Probeer het opnieuw.';
+    }
+  }
 }

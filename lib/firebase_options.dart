@@ -50,19 +50,18 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyBYb5bse1KpZd1BYDVhnZANZum15_811ls',
-    appId: '1:620579732627:android:472a5b45e12b9016b6a166',
-    messagingSenderId: '620579732627',
-    projectId: 'kins-fleet-app',
-    storageBucket: 'kins-fleet-app.firebasestorage.app',
+    apiKey: 'AIzaSyCo0lfasXGxN0WsXAZHiP8QZ_G69Ka5MMg',
+    appId: '1:871386815586:android:e5438154a47cc74b50c53b',
+    messagingSenderId: '871386815586',
+    projectId: 'kins-logistics',
+    storageBucket: 'kins-logistics.firebasestorage.app',
   );
-
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyCYocm6fRgC_RknS9mitBgQVmlBriPXKT8',
-    appId: '1:620579732627:ios:a7b7cdcaef21b750b6a166',
-    messagingSenderId: '620579732627',
-    projectId: 'kins-fleet-app',
-    storageBucket: 'kins-fleet-app.firebasestorage.app',
+    apiKey: 'AIzaSyCE57odp-d0zRbbMvsXSwZ0qbKsOoNzpe8',
+    appId: '1:871386815586:ios:0567ea7c903c637250c53b',
+    messagingSenderId: '871386815586',
+    projectId: 'kins-logistics',
+    storageBucket: 'kins-logistics.firebasestorage.app',
     iosBundleId: 'nl.kins.logistics.driver',
   );
 }

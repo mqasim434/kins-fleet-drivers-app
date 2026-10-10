@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "620579732627",
-    "project_id": "kins-fleet-app",
-    "storage_bucket": "kins-fleet-app.firebasestorage.app"
+    "project_number": "871386815586",
+    "project_id": "kins-logistics",
+    "storage_bucket": "kins-logistics.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:620579732627:android:472a5b45e12b9016b6a166",
+        "mobilesdk_app_id": "1:871386815586:android:e5438154a47cc74b50c53b",
         "android_client_info": {
           "package_name": "com.kins.logistics.driver"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyBYb5bse1KpZd1BYDVhnZANZum15_811ls"
+          "current_key": "AIzaSyCo0lfasXGxN0WsXAZHiP8QZ_G69Ka5MMg"
         }
       ],
       "services": {

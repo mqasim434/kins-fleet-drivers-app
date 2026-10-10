@@ -1,5 +1,5 @@
 name: kins_fleet_drivers
-description: "A new Flutter project."
+description: "KINS Logistics driver app for shifts, vehicles, and fleet photos."
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
@@ -46,31 +46,40 @@ dependencies:
   crypto: ^3.0.6
   uuid: ^4.5.1
   mime: ^2.0.0
+  geolocator: ^13.0.4
+  flutter_native_splash: ^2.4.6
+  path_provider: ^2.1.5
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-
-  # The "flutter_lints" package below contains a set of recommended lints to
-  # encourage good coding practices. The lint set provided by the package is
-  # activated in the `analysis_options.yaml` file located at the root of your
-  # package. See that file for information about deactivating specific lint
-  # rules and activating additional ones.
   flutter_lints: ^5.0.0
+
+flutter_native_splash:
+  color: "#F7F4F2"
+  image: assets/branding/app_logo.png
+  color_dark: "#F7F4F2"
+  image_dark: assets/branding/app_logo.png
+  android_12:
+    color: "#F7F4F2"
+    icon_background_color: "#F7F4F2"
+    image: assets/branding/app_logo.png
+    color_dark: "#F7F4F2"
+    icon_background_color_dark: "#F7F4F2"
+    image_dark: assets/branding/app_logo.png
+  android: true
+  ios: true
+  web: false
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 
 # The following section is specific to Flutter packages.
 flutter:
-  generate: true
-
   uses-material-design: true
 
-  # To add assets to your application, add an assets section, like this:
-  # assets:
-  #   - images/a_dot_burr.jpeg
-  #   - images/a_dot_ham.jpeg
+  assets:
+    - assets/branding/app_logo.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

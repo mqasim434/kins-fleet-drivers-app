@@ -1,14 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:provider/provider.dart';
-import 'package:kins_fleet_drivers/core/auth/auth_provider.dart';
+import 'package:kins_fleet_drivers/core/auth/auth_controller.dart';
 import 'package:kins_fleet_drivers/core/config/app_colors.dart';
-import 'package:kins_fleet_drivers/core/l10n/auth_messages.dart';
-import 'package:kins_fleet_drivers/core/utils/validators.dart';
-import 'package:kins_fleet_drivers/l10n/app_localizations.dart';
-import 'package:kins_fleet_drivers/routing/routes.dart';
-import 'package:kins_fleet_drivers/widgets/error_banner.dart';
-import 'package:kins_fleet_drivers/widgets/loading_overlay.dart';
+import 'package:provider/provider.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -18,146 +12,93 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final _formKey = GlobalKey<FormState>();
-  final _emailController = TextEditingController();
-  final _passwordController = TextEditingController();
-  bool _obscurePassword = true;
+  final _email = TextEditingController();
+  final _password = TextEditingController();
+  String? _error;
+  bool _obscure = true;
 
   @override
   void dispose() {
-    _emailController.dispose();
-    _passwordController.dispose();
+    _email.dispose();
+    _password.dispose();
     super.dispose();
   }
 
   Future<void> _submit() async {
-    if (!_formKey.currentState!.validate()) return;
-
-    final auth = context.read<AuthProvider>();
-    auth.clearLoginError();
-
-    final success = await auth.signIn(
-      email: _emailController.text,
-      password: _passwordController.text,
-    );
-
-    if (!mounted) return;
-    if (success) {
-      context.go(AppRoutes.dashboard);
+    final email = _email.text.trim();
+    final password = _password.text;
+    if (email.isEmpty || password.isEmpty) {
+      setState(() => _error = 'Vul e-mail en wachtwoord in.');
+      return;
     }
+    final message = await context.read<AuthController>().signIn(email, password);
+    if (!mounted) return;
+    setState(() => _error = message);
   }
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-    final auth = context.watch<AuthProvider>();
-
+    final busy = context.watch<AuthController>().busy;
     return Scaffold(
+      backgroundColor: Colors.white,
       body: SafeArea(
-        child: Stack(
+        child: ListView(
+          padding: const EdgeInsets.fromLTRB(24, 48, 24, 24),
           children: [
-            SingleChildScrollView(
-              padding: const EdgeInsets.all(24),
-              child: Form(
-                key: _formKey,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    const SizedBox(height: 32),
-                    Container(
-                      alignment: Alignment.center,
-                      width: 72,
-                      height: 72,
-                      decoration: BoxDecoration(
-                        color: AppColors.navy.withValues(alpha: 0.08),
-                        borderRadius: BorderRadius.circular(18),
-                      ),
-                      child: const Icon(
-                        Icons.directions_bus_filled,
-                        size: 40,
-                        color: AppColors.navy,
-                      ),
-                    ),
-                    const SizedBox(height: 24),
-                    Text(
-                      l10n.loginWelcome,
-                      style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                            fontWeight: FontWeight.bold,
-                            color: AppColors.textPrimary,
-                          ),
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      l10n.loginSubtitle,
-                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                            color: AppColors.textSecondary,
-                          ),
-                    ),
-                    const SizedBox(height: 32),
-                    if (auth.loginErrorKey != null) ...[
-                      ErrorBanner(
-                        message: auth.loginErrorKey!.localize(l10n),
-                        onDismiss: auth.clearLoginError,
-                      ),
-                      const SizedBox(height: 16),
-                    ],
-                    TextFormField(
-                      controller: _emailController,
-                      keyboardType: TextInputType.emailAddress,
-                      textInputAction: TextInputAction.next,
-                      autocorrect: false,
-                      decoration: InputDecoration(
-                        labelText: l10n.loginEmail,
-                        prefixIcon: const Icon(Icons.email_outlined),
-                      ),
-                      validator: (value) => Validators.email(value, l10n),
-                      enabled: !auth.isBusy,
-                    ),
-                    const SizedBox(height: 16),
-                    TextFormField(
-                      controller: _passwordController,
-                      obscureText: _obscurePassword,
-                      textInputAction: TextInputAction.done,
-                      onFieldSubmitted: (_) => _submit(),
-                      decoration: InputDecoration(
-                        labelText: l10n.loginPassword,
-                        prefixIcon: const Icon(Icons.lock_outline),
-                        suffixIcon: IconButton(
-                          icon: Icon(
-                            _obscurePassword
-                                ? Icons.visibility_outlined
-                                : Icons.visibility_off_outlined,
-                          ),
-                          onPressed: () {
-                            setState(() {
-                              _obscurePassword = !_obscurePassword;
-                            });
-                          },
-                        ),
-                      ),
-                      validator: (value) => Validators.password(value, l10n),
-                      enabled: !auth.isBusy,
-                    ),
-                    const SizedBox(height: 12),
-                    Align(
-                      alignment: Alignment.centerRight,
-                      child: TextButton(
-                        onPressed: auth.isBusy
-                            ? null
-                            : () => context.push(AppRoutes.forgotPassword),
-                        child: Text(l10n.loginForgot),
-                      ),
-                    ),
-                    const SizedBox(height: 24),
-                    ElevatedButton(
-                      onPressed: auth.isBusy ? null : _submit,
-                      child: Text(l10n.loginSubmit),
-                    ),
-                  ],
+            const Text(
+              'KINS',
+              style: TextStyle(
+                color: AppColors.bordeaux,
+                fontSize: 18,
+                fontWeight: FontWeight.w800,
+                letterSpacing: 1.2,
+              ),
+            ),
+            const SizedBox(height: 12),
+            const Text(
+              'Chauffeur',
+              style: TextStyle(fontSize: 32, fontWeight: FontWeight.w700, color: AppColors.ink),
+            ),
+            const SizedBox(height: 8),
+            const Text(
+              'Log in met het account dat de planning voor u heeft aangemaakt.',
+              style: TextStyle(color: AppColors.muted, height: 1.4),
+            ),
+            const SizedBox(height: 28),
+            TextField(
+              controller: _email,
+              keyboardType: TextInputType.emailAddress,
+              autofillHints: const [AutofillHints.email],
+              textInputAction: TextInputAction.next,
+              decoration: const InputDecoration(labelText: 'E-mail'),
+            ),
+            const SizedBox(height: 12),
+            TextField(
+              controller: _password,
+              obscureText: _obscure,
+              autofillHints: const [AutofillHints.password],
+              onSubmitted: (_) => _submit(),
+              decoration: InputDecoration(
+                labelText: 'Wachtwoord',
+                suffixIcon: IconButton(
+                  onPressed: () => setState(() => _obscure = !_obscure),
+                  icon: Icon(_obscure ? Icons.visibility_outlined : Icons.visibility_off_outlined),
                 ),
               ),
             ),
-            if (auth.isBusy) LoadingOverlay(message: l10n.loginBusy),
+            if (_error != null) ...[
+              const SizedBox(height: 12),
+              Text(_error!, style: const TextStyle(color: AppColors.bordeaux)),
+            ],
+            const SizedBox(height: 20),
+            FilledButton(
+              onPressed: busy ? null : _submit,
+              child: Text(busy ? 'Bezig…' : 'Inloggen'),
+            ),
+            TextButton(
+              onPressed: () => context.push('/forgot'),
+              child: const Text('Wachtwoord vergeten'),
+            ),
           ],
         ),
       ),

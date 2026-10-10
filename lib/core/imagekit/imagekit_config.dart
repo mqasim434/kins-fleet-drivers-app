@@ -22,9 +22,8 @@ abstract final class ImageKitConfig {
     'heif',
   };
 
-  static bool get isUploadReady =>
-      AppConfig.imageKitPublicKey.isNotEmpty &&
-      AppConfig.imageKitPrivateKey.isNotEmpty;
+  /// Server-side upload only needs the private API key (Basic auth).
+  static bool get isUploadReady => AppConfig.imageKitPrivateKeyTrimmed.isNotEmpty;
 
   static String folderForBus(String busId, String dateIso) =>
       '/kins-fleet/buses/$busId/$dateIso';

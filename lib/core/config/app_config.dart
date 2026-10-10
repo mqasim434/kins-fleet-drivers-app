@@ -8,4 +8,8 @@ abstract final class AppConfig {
   static const imageKitPrivateKey = String.fromEnvironment(
     'IMAGEKIT_PRIVATE_KEY',
   );
+
+  static String get imageKitPrivateKeyTrimmed => imageKitPrivateKey.trim();
+
+  static String get imageKitPublicKeyTrimmed => imageKitPublicKey.trim();
 }
